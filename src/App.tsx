@@ -1,33 +1,45 @@
-import { useEffect } from "react";
-// import { hashToHex } from "@glitterprotocol/glitter-sdk/dist/util/index";
-// import { hashToHex } from "@glitterprotocol/glitter-sdk";
-import { Searcher } from "@glitterprotocol/glitter-sdk";
-import "./App.css";
+import React, { useMemo } from "react";
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from "@solana/wallet-adapter-react";
+import {
+  UnsafeBurnerWalletAdapter,
+  CoinbaseWalletAdapter,
+} from "@solana/wallet-adapter-wallets";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import {
+  WalletModalProvider,
+  WalletDisconnectButton,
+  WalletMultiButton,
+} from "@solana/wallet-adapter-react-ui";
+import { clusterApiUrl } from "@solana/web3.js";
+import { MyComponent } from "./components/demo";
+import "./index.css";
 
-export interface IDataType {
-  id: string;
-  title: string;
-  createTime: string;
-  updateTime: string;
-  status: 0 | 1;
-  sql: string;
-  address?: string;
-}
+const App = () => {
+  const network = WalletAdapterNetwork.Testnet;
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const wallets = useMemo(
+    () => [
+      //Import wallets adapters you want to use
+      new UnsafeBurnerWalletAdapter(),
+      new CoinbaseWalletAdapter(),
+    ],
+    [network]
+  );
 
-function App() {
-  const init = () => {
-    const searcher = new Searcher({
-      URL: "https://gateway.magnode.ru/",
-    });
-    console.log(searcher);
-    // const res = hashToHex("12312321321");
-    // console.log(res);
-  };
-  useEffect(() => {
-    init();
-  });
-
-  return <>asdjijasji</>;
-}
+  return (
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>
+          <WalletMultiButton />
+          <WalletDisconnectButton />
+          <MyComponent />
+        </WalletModalProvider>
+      </WalletProvider>
+    </ConnectionProvider>
+  );
+};
 
 export default App;
