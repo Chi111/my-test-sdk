@@ -15,10 +15,10 @@ import {
 } from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
 import { MyComponent } from "./components/demo";
-import "./index.css";
+import "./app.css";
 
 const App = () => {
-  const network = WalletAdapterNetwork.Testnet;
+  const network = WalletAdapterNetwork.Mainnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
   const wallets = useMemo(
     () => [
